@@ -62,9 +62,10 @@ class MainViewModel  (app: Application) : AndroidViewModel(app){
         currentQuestion=QuestionRepository.getQuestion(currentQuestionNumber.value)
         questionTextLiveData.value=currentQuestion.questionText
         questionAnswer=currentQuestion.questionAnswer
+        checkNextPrev()
     }
     fun addQuestion(){
         QuestionRepository.addNewRandom()
-        update()
+        questionCount.value=QuestionRepository.questionsCountInt()
     }
 }

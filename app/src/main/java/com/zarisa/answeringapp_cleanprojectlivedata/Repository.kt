@@ -41,8 +41,7 @@ object QuestionRepository {
             db!!.questionDao().getTotalNumberOfQuestionsInt(),
             "$randA-$randB",
             "${randA - randB}",
-            false
-        )
+            false)
     }
 
     fun addNewRandom() {
