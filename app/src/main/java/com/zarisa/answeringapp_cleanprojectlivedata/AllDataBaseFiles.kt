@@ -14,20 +14,22 @@ data class Question(
 
 @Dao
 interface QuestionDao {
-    @Query("SELECT * FROM Question")
-    fun getAll(): List<Question>
 
-    @Query("SELECT * FROM Question WHERE number=:n")
-    fun getQuestionLiveData(n : Int) : LiveData<Question>
+    @Query("SELECT * FROM Question WHERE number IN (:n)")
+    fun getQuestionLiveData(n : Int?) : Question
 
-    @Query("SELECT * FROM Question WHERE number = :n LIMIT 1")
-    fun getQuestion( n : Int?) : Question?
-
+    @Query("SELECT count(*) FROM QUESTION")
+    fun getTotalNumberOfQuestionsLiveData():LiveData<Int>
+    @Query("SELECT count(*) FROM QUESTION")
+    fun getTotalNumberOfQuestionsInt():Int
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg questions: Question)
 
     @Delete
     fun delete(question : Question)
+    @Delete()
+    fun deleteAll(questionList:List<Question>)
+
 }
 
 @Database(entities = [Question::class], version = 1)

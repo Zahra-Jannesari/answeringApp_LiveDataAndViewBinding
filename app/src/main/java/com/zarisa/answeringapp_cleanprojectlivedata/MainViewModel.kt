@@ -1,79 +1,70 @@
 package com.zarisa.answeringapp_cleanprojectlivedata
 
+import android.app.Application
 import android.graphics.Color
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 
-class MainViewModel  : ViewModel(){
-
+class MainViewModel  (app: Application) : AndroidViewModel(app){
+    val questionCount = MutableLiveData<Int>(1)
+    val currentQuestionNumber=MutableLiveData<Int>(1)
+    private var currentQuestion:Question
+    private var questionAnswer= String()
+    val questionTextLiveData = MutableLiveData<String>()
+    init{
+        QuestionRepository.initDB(app.applicationContext)
+        questionCount.value=QuestionRepository.questionsCountInt()
+        currentQuestion=QuestionRepository.getQuestion(1)
+        questionTextLiveData.value=currentQuestion.questionText
+        questionAnswer=currentQuestion.questionAnswer
+    }
     val scoreLiveData= MutableLiveData(0)
-    val scoreColorLiveData: LiveData<Int> = Transformations.map(scoreLiveData
-    ) {
+    val scoreColorLiveData: LiveData<Int> = Transformations.map(scoreLiveData) {
         when (it) {
-            in 0..(questionCount /3) -> Color.RED
-            in (questionCount /3)+1..(questionCount*2/3) -> Color.YELLOW
+            in 0..5 -> Color.RED
+            in 5..10 -> Color.YELLOW
             else -> Color.GREEN
         }
     }
-
-    private var questionAnswer=QuestionRepository.questionList[0].questionAnswer
-    val numberLiveData = MutableLiveData(1)
-    val hintLiveData: LiveData<String> = Transformations.map(numberLiveData
-    ) {
-        when (it) {
-            in 1..(questionCount / 2) -> "hurry up!"
-            in (questionCount / 2) + 1..questionCount -> "almost there!"
-            else -> ":)"
-        }
-    }
-    val questionLiveData = MutableLiveData(
-        QuestionRepository.questionList[0].questionText
-    )
-    val questionCount = QuestionRepository.questionList.size
-
     var nextEnabledLiveData = MutableLiveData(true)
     var prevEnabledLiveData = MutableLiveData(false)
-
     fun nextClicked() {
-        numberLiveData.value = numberLiveData.value?.plus(1)
-        numberLiveData.value?.let{ number ->
-            questionLiveData.value = QuestionRepository.questionList[number-1].questionText
-            questionAnswer=QuestionRepository.questionList[number-1].questionAnswer
-        }
+        currentQuestionNumber.value = currentQuestionNumber.value?.plus(1)
+        update()
         checkNextPrev()
     }
-
     fun prevClicked() {
-        numberLiveData.value = numberLiveData.value?.minus(1)
-        numberLiveData.value?.let{ number ->
-            questionLiveData.value = QuestionRepository.questionList[number-1].questionText
-            questionAnswer=QuestionRepository.questionList[number-1].questionAnswer
-        }
+        currentQuestionNumber.value = currentQuestionNumber.value?.minus(1)
+        update()
         checkNextPrev()
     }
     private fun checkNextPrev(){
-        nextEnabledLiveData.value=when(numberLiveData.value){
-            questionCount->false
+        nextEnabledLiveData.value=when(currentQuestionNumber.value){
+            questionCount.value->false
             else->true
         }
-        prevEnabledLiveData.value=when(numberLiveData.value){
+        prevEnabledLiveData.value=when(currentQuestionNumber.value){
             1->false
             else->true
         }
     }
-    private fun checkAnswer(userAnswer:String){
-        if (userAnswer==questionAnswer && !QuestionRepository.questionList[numberLiveData.value?.minus(1)!!].isAnswered) {
+    fun submitAnswer(userAnswer:String) {
+//        checkAnswer
+        if (userAnswer==questionAnswer && !currentQuestion.isAnswered) {
             scoreLiveData.value=scoreLiveData.value?.plus(1)
         }
-        if(userAnswer!=""){
-            QuestionRepository.questionList[numberLiveData.value?.minus(1)!!].isAnswered = true
-        }
-
+//        if(userAnswer!=""){
+//            QuestionRepository.questionList[numberLiveData.value?.minus(1)!!].isAnswered = true
+//        }
     }
-
-    fun submitAnswer(userAnswer:String) {
-        checkAnswer(userAnswer)
+    fun update(){
+//        questionCount.value=QuestionRepository.questionsCountLivedata().value
+        questionCount.value=QuestionRepository.questionsCountInt()
+        currentQuestion=QuestionRepository.getQuestion(currentQuestionNumber.value)
+        questionTextLiveData.value=currentQuestion.questionText
+        questionAnswer=currentQuestion.questionAnswer
+    }
+    fun addQuestion(){
+        QuestionRepository.addNewRandom()
+        update()
     }
 }

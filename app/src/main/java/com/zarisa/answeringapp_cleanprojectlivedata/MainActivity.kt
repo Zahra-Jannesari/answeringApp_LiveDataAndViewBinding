@@ -3,20 +3,34 @@ package com.zarisa.answeringapp_cleanprojectlivedata
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.lifecycle.ViewModelProvider
+import com.zarisa.answeringapp_cleanprojectlivedata.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private val vmodel : MainViewModel by viewModels()
+    private lateinit var vmodel : MainViewModel
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        vmodel = ViewModelProvider(this)[MainViewModel::class.java]
         setLiveDatas()
         initViews()
     }
 
     private fun setLiveDatas() {
-        vmodel.questionLiveData.observe(this) { question ->
+        vmodel.questionCount.observe(this) { number ->
+            binding.tvTotal.text = number.toString()
+            binding.progressBar.max = number
+        }
+        vmodel.currentQuestionNumber.observe(this){number->
+            binding.tvCurrentNumber.text=number.toString()
+            binding.progressBar.progress = number
+        }
+        vmodel.scoreLiveData.observe(this){
+            binding.textViewScore.text=it.toString()
+        }
+        vmodel.questionTextLiveData.observe(this) { question ->
             binding.tvQuestion.text = question
         }
         vmodel.nextEnabledLiveData.observe(this) { enabled ->
@@ -25,23 +39,12 @@ class MainActivity : AppCompatActivity() {
         vmodel.prevEnabledLiveData.observe(this) { enabled ->
             binding.buttonPrev.isEnabled = enabled
         }
-        vmodel.numberLiveData.observe(this) { number ->
-            binding.tvNumber.text = number.toString()
-            binding.progressBar.progress = number
-        }
-        vmodel.hintLiveData.observe(this) {
-            binding.textViewHint.text = it
-        }
-        vmodel.scoreLiveData.observe(this){
-            binding.textViewScore.text=it.toString()
-        }
         vmodel.scoreColorLiveData.observe(this) {
             binding.textViewScore.setTextColor(it)
         }
     }
 
     private fun initViews() {
-        binding.progressBar.max = vmodel.questionCount
         binding.buttonNext.setOnClickListener {
             vmodel.nextClicked()
             binding.editTextAnswer.setText("")
