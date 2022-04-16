@@ -28,8 +28,6 @@ interface QuestionDao {
 
     @Delete
     fun delete(question : Question)
-    @Delete
-    fun deleteAll(questionList:List<Question>?)
 
 }
 
