@@ -15,6 +15,7 @@ data class Question(
 @Dao
 interface QuestionDao {
 
+
     @Query("SELECT * FROM Question WHERE number IN (:n)")
     fun getQuestionLiveData(n : Int?) : Question
 
@@ -27,8 +28,8 @@ interface QuestionDao {
 
     @Delete
     fun delete(question : Question)
-    @Delete()
-    fun deleteAll(questionList:List<Question>)
+    @Delete
+    fun deleteAll(questionList:List<Question>?)
 
 }
 

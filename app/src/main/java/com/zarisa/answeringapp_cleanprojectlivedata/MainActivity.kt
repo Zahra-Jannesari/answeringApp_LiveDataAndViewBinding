@@ -7,13 +7,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.zarisa.answeringapp_cleanprojectlivedata.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private val vmodel : MainViewModel by viewModels()
+//    private val vmodel : MainViewModel by viewModels()
+    private lateinit var vmodel : MainViewModel
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        vmodel = ViewModelProvider(this)[MainViewModel::class.java]
+        vmodel = ViewModelProvider(this)[MainViewModel::class.java]
         setLiveDatas()
         initViews()
     }

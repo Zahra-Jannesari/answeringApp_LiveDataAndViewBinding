@@ -5,14 +5,14 @@ import android.graphics.Color
 import androidx.lifecycle.*
 
 class MainViewModel  (app: Application) : AndroidViewModel(app){
-    val questionCount = MutableLiveData<Int>(1)
+    var questionCount : LiveData<Int>
     val currentQuestionNumber=MutableLiveData<Int>(1)
     private var currentQuestion:Question
     private var questionAnswer= String()
     val questionTextLiveData = MutableLiveData<String>()
     init{
         QuestionRepository.initDB(app.applicationContext)
-        questionCount.value=QuestionRepository.questionsCountInt()
+        questionCount=QuestionRepository.questionsCountLivedata()
         currentQuestion=QuestionRepository.getQuestion(1)
         questionTextLiveData.value=currentQuestion.questionText
         questionAnswer=currentQuestion.questionAnswer
@@ -57,8 +57,8 @@ class MainViewModel  (app: Application) : AndroidViewModel(app){
 //        }
     }
     fun update(){
-//        questionCount.value=QuestionRepository.questionsCountLivedata().value
-        questionCount.value=QuestionRepository.questionsCountInt()
+        questionCount=QuestionRepository.questionsCountLivedata()
+//        questionCount.value=QuestionRepository.questionsCountInt()
         currentQuestion=QuestionRepository.getQuestion(currentQuestionNumber.value)
         questionTextLiveData.value=currentQuestion.questionText
         questionAnswer=currentQuestion.questionAnswer
@@ -66,6 +66,6 @@ class MainViewModel  (app: Application) : AndroidViewModel(app){
     }
     fun addQuestion(){
         QuestionRepository.addNewRandom()
-        questionCount.value=QuestionRepository.questionsCountInt()
+        questionCount=QuestionRepository.questionsCountLivedata()
     }
 }

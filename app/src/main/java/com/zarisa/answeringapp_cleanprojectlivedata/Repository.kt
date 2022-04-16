@@ -13,7 +13,7 @@ object QuestionRepository {
         addTestData()
     }
     private fun addTestData() {
-//        questionDao?.deleteAll()
+//        questionDao?.deleteAll(questionDao?.getQuestionList())
         questionDao?.insertAll(
             newRandomQuestion(),
             newRandomQuestion(),
@@ -38,14 +38,15 @@ object QuestionRepository {
         var randB = Random().nextInt(500) + 1
         var randA = Random().nextInt(500) + randB
         return Question(
-            db!!.questionDao().getTotalNumberOfQuestionsInt(),
+//            db!!.questionDao().getTotalNumberOfQuestionsInt(),
+            Random().nextInt(700),
             "$randA-$randB",
             "${randA - randB}",
             false)
     }
 
     fun addNewRandom() {
-        addQuestion(newRandomQuestion())
+        db!!.questionDao().insertAll(newRandomQuestion())
     }
     fun questionsCountInt():Int{
         return db!!.questionDao().getTotalNumberOfQuestionsInt()
