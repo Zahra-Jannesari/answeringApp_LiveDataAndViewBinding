@@ -8,6 +8,7 @@ object QuestionRepository {
     var db: AppDatabase? = null
     var questionDao: QuestionDao? = null
     fun initDB(context: Context) {
+//        AppDatabase.destroyDataBase()
         db = AppDatabase.getAppDataBase(context)
         questionDao = db?.questionDao()
         addTestData()
@@ -34,7 +35,7 @@ object QuestionRepository {
         db!!.questionDao().insertAll(q) }
 
 
-    fun newRandomQuestion(): Question {
+    private fun newRandomQuestion(): Question {
         var randB = Random().nextInt(500) + 1
         var randA = Random().nextInt(500) + randB
         return Question(

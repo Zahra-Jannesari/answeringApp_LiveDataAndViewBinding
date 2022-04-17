@@ -5,15 +5,17 @@ import android.graphics.Color
 import androidx.lifecycle.*
 
 class MainViewModel  (app: Application) : AndroidViewModel(app){
-    var questionCount =MutableLiveData<Int>(1)
-    val currentQuestionNumber=MutableLiveData<Int>(1)
+//    var questionCount =MutableLiveData<Int>(1)
+//    val currentQuestionNumber=MutableLiveData<Int>(1)
+    lateinit var questionCount :LiveData<Int>
+    var currentQuestionNumber=MutableLiveData<Int>(1)
     private var currentQuestion:Question
     private var questionAnswer= String()
     val questionTextLiveData = MutableLiveData<String>()
     init{
         QuestionRepository.initDB(app.applicationContext)
-//        questionCount=QuestionRepository.questionsCountLivedata()
-        questionCount.value=QuestionRepository.questionsCountInt()
+        questionCount=QuestionRepository.questionsCountLivedata()
+//        questionCount.value=QuestionRepository.questionsCountInt()
         currentQuestion=QuestionRepository.getQuestion(1)
         questionTextLiveData.value=currentQuestion.questionText
         questionAnswer=currentQuestion.questionAnswer
@@ -58,8 +60,8 @@ class MainViewModel  (app: Application) : AndroidViewModel(app){
 //        }
     }
     fun update(){
-//        questionCount=QuestionRepository.questionsCountLivedata()
-        questionCount.value=QuestionRepository.questionsCountInt()
+        questionCount=QuestionRepository.questionsCountLivedata()
+//        questionCount.value=QuestionRepository.questionsCountInt()
         currentQuestion=QuestionRepository.getQuestion(currentQuestionNumber.value)
         questionTextLiveData.value=currentQuestion?.questionText
         questionAnswer=currentQuestion?.questionAnswer
@@ -67,7 +69,7 @@ class MainViewModel  (app: Application) : AndroidViewModel(app){
     }
     fun addQuestion(){
         QuestionRepository.addNewRandom()
-//        questionCount=QuestionRepository.questionsCountLivedata()
-        questionCount.value=QuestionRepository.questionsCountInt()
+        questionCount=QuestionRepository.questionsCountLivedata()
+//        questionCount.value=QuestionRepository.questionsCountInt()
     }
 }

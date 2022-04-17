@@ -3,7 +3,6 @@ package com.zarisa.answeringapp_cleanprojectlivedata
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.zarisa.answeringapp_cleanprojectlivedata.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
