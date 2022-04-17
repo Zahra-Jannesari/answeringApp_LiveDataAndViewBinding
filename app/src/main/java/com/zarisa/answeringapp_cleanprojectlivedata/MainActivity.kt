@@ -3,6 +3,7 @@ package com.zarisa.answeringapp_cleanprojectlivedata
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.zarisa.answeringapp_cleanprojectlivedata.databinding.ActivityMainBinding
 
@@ -12,9 +13,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding= ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding= DataBindingUtil.setContentView(this,R.layout.activity_main)
 //        vmodel = ViewModelProvider(this)[MainViewModel::class.java]
+        binding.vModel=vmodel
         setLiveDatas()
         initViews()
     }
@@ -29,7 +30,8 @@ class MainActivity : AppCompatActivity() {
             binding.progressBar.progress = number
         }
         vmodel.scoreLiveData.observe(this){
-            binding.textViewScore.text=it.toString()
+            binding.score=it
+//            binding.textViewScore.text=it.toString()
         }
         vmodel.questionTextLiveData.observe(this) { question ->
             binding.tvQuestion.text = question
@@ -46,14 +48,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        binding.buttonNext.setOnClickListener {
-            vmodel.nextClicked()
-            binding.editTextAnswer.setText("")
-        }
-        binding.buttonPrev.setOnClickListener {
-            vmodel.prevClicked()
-            binding.editTextAnswer.setText("")
-        }
+//        binding.buttonNext.setOnClickListener {
+//            vmodel.nextClicked()
+//            binding.editTextAnswer.setText("")
+//        }
+//        binding.buttonPrev.setOnClickListener {
+//            vmodel.prevClicked()
+//            binding.editTextAnswer.setText("")
+//        }
         binding.buttonSubmitAnswer.setOnClickListener {
             vmodel.submitAnswer(binding.editTextAnswer.text.toString())
         }
